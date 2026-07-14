@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "../lib/gsap";
+import { navJump } from "../lib/navJump";
 
 // A full-viewport pinned "chapter": the section pins while the user scrolls,
 // and that vertical scroll instead drives a horizontal pan through a title
@@ -24,7 +25,11 @@ export default function GalleryChapter({ title, index, photos, dense = false }) 
         titleObserver = new IntersectionObserver(
           ([entry]) => {
             if (!entry.isIntersecting) return;
-            gsap.to(titleRef.current, { clipPath: "inset(0 0 0% 0)", duration: 1, ease: "power3.out" });
+            if (navJump.active) {
+              gsap.set(titleRef.current, { clipPath: "inset(0 0 0% 0)" });
+            } else {
+              gsap.to(titleRef.current, { clipPath: "inset(0 0 0% 0)", duration: 1, ease: "power3.out" });
+            }
             titleObserver.disconnect();
           },
           { threshold: 0.15 }

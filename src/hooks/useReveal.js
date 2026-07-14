@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../lib/gsap";
+import { navJump } from "../lib/navJump";
 
 const OFFSETS = {
   up: { y: 28, x: 0 },
@@ -33,15 +34,22 @@ export function useReveal({ direction = "up", delay = 0 } = {}) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        gsap.to(el, {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          scale: 1,
-          duration: 0.9,
-          delay: delay / 1000,
-          ease: "power3.out",
-        });
+        if (navJump.active) {
+          // Jumping here via a nav link / "Ver Serviços" — snap straight to
+          // the settled state instead of animating, so a fast smooth-scroll
+          // past several sections doesn't fire a cascade of fade-ins.
+          gsap.set(el, { opacity: 1, x: 0, y: 0, scale: 1 });
+        } else {
+          gsap.to(el, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.9,
+            delay: delay / 1000,
+            ease: "power3.out",
+          });
+        }
         observer.disconnect();
       },
       { threshold: 0.1, rootMargin: "0px 0px -12% 0px" }

@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { ReactLenis } from "lenis/react";
 import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
 import { useLenisGsapSync } from "./hooks/useLenisGsapSync";
+import { initNavJumpListener } from "./lib/navJump";
 import Navbar from "./components/Navbar";
 import ScrollProgress from "./components/ScrollProgress";
 import Hero from "./components/Hero";
@@ -14,6 +16,7 @@ import Footer from "./components/Footer";
 
 function Sections() {
   useLenisGsapSync();
+  useEffect(() => initNavJumpListener(), []);
   return (
     <div className="min-h-screen w-full bg-bone">
       <ScrollProgress />
